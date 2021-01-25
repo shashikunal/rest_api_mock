@@ -3,8 +3,10 @@ const bodyParser = require("body-parser");
 const { connect } = require("mongoose");
 const cors = require("cors");
 const { success, error } = require("consola");
-const { DB, PORT } = require("./config");
+// const { DB, PORT } = require("./config");
 
+const MONGODB_URL =
+  "mongodb+srv://api_testing:api_testing@cluster0.mgvmw.mongodb.net/api_testing?retryWrites=true&w=majority";
 /*------------------------initialize express app----------------------------*/
 const app = express();
 
@@ -24,24 +26,28 @@ app.use("/posts", posts);
 
 let startApp = async () => {
   try {
-    await connect(DB, {
+    await connect(MONGODB_URL, {
       useUnifiedTopology: true,
       useNewUrlParser: true,
       useFindAndModify: true,
     });
     success({
-      message: `successfully Database connected ${DB}`,
+      message: `successfully Database connected ${MONGODB_URL}`,
       badge: true,
     });
+    const PORT = 5000;
     //listen port
-    app.listen(PORT, (err) => {
+    app.listen(PORT, err => {
       if (err) {
         error({ message: err, badge: true });
       }
       success({ message: `Server is running on ${PORT}`, badge: true });
     });
   } catch (err) {
-    error({ message: `unable to connect database ${DB}`, badge: true });
+    error({
+      message: `unable to connect database ${MONGODB_URL}`,
+      badge: true,
+    });
   }
 };
 startApp();
